@@ -1,0 +1,30 @@
+apiVersion: v1
+data:
+  service-ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDUTCCAjmgAwIBAgIIafmKGOdjG4owDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UE
+    Awwrb3BlbnNoaWZ0LXNlcnZpY2Utc2VydmluZy1zaWduZXJAMTcxMzE2ODkwMTAe
+    Fw0yNDA0MTUwODE1MDBaFw0yNjA2MTQwODE1MDFaMDYxNDAyBgNVBAMMK29wZW5z
+    aGlmdC1zZXJ2aWNlLXNlcnZpbmctc2lnbmVyQDE3MTMxNjg5MDEwggEiMA0GCSqG
+    SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC8XBV+KlGHId3+blkK+pXHRWqw5bMXZVW0
+    DxayQQsv2pRe1lSekrFjEMKlMXESDSb662SX3Irc7CDc05TsM/vF3BC8WIsLCOEm
+    8PQdToRR+cCHgocCVA46M96fkLIKYJgwbagJ1Lo/SgeajN3j0FnLw52g5c+NvAEL
+    mpw8TY8OJh8bhqhKwVksd1H1mhMaUrnL6TykwmeDUVwJ5niQNVbtT3jbpH7/jxtr
+    275Hcmj2fVmuocJQXurVj+SU2I+9KL7LyUwluAyW8+44X2EwqdUhGay2/DDOo3Ec
+    TGua2fsFnwhpAt5Hl2egc44ZpO3qRiHp6C6ZrFAUvWngP3dDdB3vAgMBAAGjYzBh
+    MA4GA1UdDwEB/wQEAwICpDAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTwtqpp
+    +RFAvDQPuK6cQQTxrKPL6jAfBgNVHSMEGDAWgBTwtqpp+RFAvDQPuK6cQQTxrKPL
+    6jANBgkqhkiG9w0BAQsFAAOCAQEAmmIra5GNzvMHHBAVg0lngT8jiOkQhVVxxIAw
+    9C+bSRETlXkYC/9Mb+L/8VFe+hH+GYOHWoeEx58HfO8Svtoaze2XDaSCpTgqa1LO
+    3EMEjQG8z9X7W90TGWH2FdzBWvhziC3AurCC8oqoPjQxKxdEu3e++t444u/Fl2GI
+    3tfQPpok/3HCsJ5LDkyGrCKXV0Gd3tiCfcz9gii1UQOIzTJ/CoFkQSoBDZeuhWZ5
+    SH6RfFOH8o97iEAm++UKzSlyUZ8SqLIE51CV8IsBrHf8/6Suk6tJ2xVYGl/n+bBv
+    6x/aZVszn9DKBtF6wFMjGRh+Y/mMc+Ma1MQZSBywPq7PX3LLqA==
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  annotations:
+    service.beta.openshift.io/inject-cabundle: "true"
+  name: assisted-image-service
+  namespace: assisted-installer
+

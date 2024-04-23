@@ -1,0 +1,10 @@
+kind: Kustomization
+resources:
+  - agentclassifications.agent-install.openshift.io.yaml
+  - agents.agent-install.openshift.io.yaml
+  - agentserviceconfigs.agent-install.openshift.io.yaml
+  - clusterdeployments.hive.openshift.io.yaml
+  - hypershiftagentserviceconfigs.agent-install.openshift.io.yaml
+  - infraenvs.agent-install.openshift.io.yaml
+  - nmstateconfigs.agent-install.openshift.io.yaml
+

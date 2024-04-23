@@ -1,0 +1,7 @@
+kind: Kustomization
+namespace: assisted-installer
+resources:
+  - ./rbac
+  - secret.yaml
+  - agentinstalladmission-deployment.yaml
+

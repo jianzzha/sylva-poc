@@ -1,0 +1,12 @@
+kind: Kustomization
+namespace: assisted-installer
+resources:
+  - ./rbac
+  - pvc.yaml
+  - ingress-cert.yaml
+  - assisted-service-configmap.yaml
+  - assisted-servicelocal-auth-secret.yaml
+  - assisted-service-secret.yaml
+  - postgres-secret.yaml
+  - assisted-service-deployment.yaml
+  - assisted-service-svc.yaml
