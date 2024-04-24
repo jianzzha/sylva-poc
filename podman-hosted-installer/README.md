@@ -5,7 +5,7 @@ The sno.yaml in this directory contains the OKD image version that was tested to
 To run the assisted installer service via podman,
 
 ```
-export DEFAULT_IP_ADDRESS=192.168.39.54 && envsubst < sno.yaml > /tmp/podman_play.yaml
+export DEFAULT_IP_ADDRESS=$(ip route get 1 | grep -oP 'src \K\S+') && envsubst < sno.yaml > /tmp/podman_play.yaml
 podman play kube /tmp/podman_play.yaml
 ```
 
