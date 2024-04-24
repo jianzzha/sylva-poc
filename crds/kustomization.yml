@@ -8,4 +8,5 @@ resources:
   - infraenvs.agent-install.openshift.io.yaml
   - nmstateconfigs.agent-install.openshift.io.yaml
   - agentclusterinstalls.extensions.hive.openshift.io.yaml
+  - clusterimagesets.hive.openshift.io.yaml
 
