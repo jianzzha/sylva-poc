@@ -7,4 +7,5 @@ resources:
   - hypershiftagentserviceconfigs.agent-install.openshift.io.yaml
   - infraenvs.agent-install.openshift.io.yaml
   - nmstateconfigs.agent-install.openshift.io.yaml
+  - agentclusterinstalls.extensions.hive.openshift.io.yaml
 
