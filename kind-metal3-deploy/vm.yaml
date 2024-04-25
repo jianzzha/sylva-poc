@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: bml-01
+  name: bmh-vm-secret
 type: Opaque
 stringData:
   username: YWRtaW4=
@@ -10,12 +10,12 @@ stringData:
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
-  name: bml-vm-01
+  name: bmh-vm-01
 spec:
   online: true
   bootMACAddress: 00:60:2f:31:81:01 
   bootMode: UEFI
   bmc:
-    address: redfish-virtualmedia+http://192.168.222.1:8000/redfish/v1/Systems/62b4c480-e0cc-4099-b405-92dee7a7a24a
-    credentialsName: bml-01
+    address: redfish-virtualmedia+http://192.168.222.1:8000/redfish/v1/Systems/REPLACE_ID
+    credentialsName: bmh-vm-secret
 
