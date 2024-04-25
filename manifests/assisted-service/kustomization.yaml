@@ -1,6 +1,7 @@
 kind: Kustomization
 namespace: assisted-installer
 resources:
+- ./crds
 - ./rbac
 - pvc.yaml
 - ingress-cert.yaml

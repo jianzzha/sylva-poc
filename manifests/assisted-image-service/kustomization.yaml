@@ -1,7 +1,6 @@
 kind: Kustomization
 namespace: assisted-installer
 resources:
-  - namespace.yaml
   - service_account.yaml
   - assisted-image-service-configmap.yaml
   - assisted-image-service-secret.yaml
