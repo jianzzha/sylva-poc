@@ -1,0 +1,9 @@
+kind: Kustomization
+resources:
+  - ironic
+  - bmo
+  - namespace
+  - agentinstalladmission
+  - assisted-image-service
+  - assisted-service 
+
