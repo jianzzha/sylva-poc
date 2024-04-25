@@ -1,5 +1,10 @@
 # Running KIND with VM Emulated Baremetal Machine
 
+Bring up a virtual mchine for testing,
+```
+./setup_vm_infra.sh
+```
+
 Bring up the KIND cluster,
 ```
 kind create cluster --config kind.yaml
@@ -18,11 +23,6 @@ kubectl apply -k ../manifests/ironic
 Start baremetal operator,
 ```
 kubectl apply -k ../manifests/bmo
-```
-
-Bring up a virtual mchine for testing,
-```
-./setup_vm_infra.sh
 ```
 
 The above script will set up a baremetal bridge, add a MASQUERADE rules on on the baremetal bridge for VM internet access, start a dnsmasq pod and a sushy emulator pod on the baremetal bridge, and start the virtual machine on the baremetal bridge,
@@ -44,6 +44,12 @@ First delete the VM emulated BMH,
 ```
 
 This should should shutdown the VM.
+
+Delete the ironic and baremetal operator,
+```
+kubectl delete -k ../manifests/bmo
+kubectl delete -k ../manifests/ironic
+```
 
 Then clean up VM and infrastructure,
 ```
