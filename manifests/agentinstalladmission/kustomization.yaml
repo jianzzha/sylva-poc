@@ -1,7 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: assisted-installer
 resources:
   - ./rbac
   - secret.yaml
   - agentinstalladmission-deployment.yaml
+images:
+- name: quay.io/edge-infrastructure/assisted-service
+  newTag: ocm-2.10
 

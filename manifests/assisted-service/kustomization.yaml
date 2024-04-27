@@ -1,3 +1,4 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: assisted-installer
 resources:
@@ -11,4 +12,6 @@ resources:
 - postgres-secret.yaml
 - assisted-service-deployment.yaml
 - assisted-service-svc.yaml
-apiVersion: kustomize.config.k8s.io/v1beta1
+images:
+- name: quay.io/edge-infrastructure/assisted-service
+  newTag: ocm-2.10
