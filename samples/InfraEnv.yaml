@@ -1,0 +1,13 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: InfraEnv
+metadata:
+  name: myinfraenv
+  namespace: demo-worker4
+spec:
+  clusterRef:
+    name: single-node
+    namespace: demo-worker4
+  pullSecretRef: 
+    name: pull-secret
+  sshAuthorizedKey: '${SSH_PUB_KEY}'
+
