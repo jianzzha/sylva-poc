@@ -79,7 +79,21 @@ spec:
 ...
 ```
 
-The BMH should reboot and install begins.
+The BMH should reboot and register. To see the registered agent,
+```
+kubectl -n demo-worker4 get agents
+```
+
+To approve the agent for install,
+```
+kubectl -n demo-worker4 patch agents.agent-install.openshift.io d0148987-b19f-4604-bd4a-7bf93397e9eb -p '{"spec":{"approved":true}}' --type merge
+```
+
+The install begins.
+```
+NAME                                   CLUSTER       APPROVED   ROLE     STAGE
+d0148987-b19f-4604-bd4a-7bf93397e9eb   single-node   true       master   Rebooting
+```
 
 After the disk is written, the iso should be unmounted, otherwise the progress will be paused, as shown below,
 ```
