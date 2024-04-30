@@ -51,16 +51,8 @@ Here is an example output,
     "message": "Updated image information (Image type is \"full-iso\", SSH public key is set)",
     "name": "image_info_updated",
     "severity": "info"
-  },
-  {
-    "cluster_id": "4afb3f44-0f0f-453a-8ba9-067f8ae4bad5",
-    "event_time": "2024-04-30T20:40:31.172Z",
-    "host_id": "d0148987-b19f-4604-bd4a-7bf93397e9eb",
-    "infra_env_id": "2757c211-aecc-4dbd-b160-22b2da726031",
-    "message": "Host d0148987-b19f-4604-bd4a-7bf93397e9eb: Successfully registered",
-    "name": "host_registration_succeeded",
-    "severity": "info"
-  },
+  }
+]
 ...
 ```
 
