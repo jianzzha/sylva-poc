@@ -69,7 +69,7 @@ data:
   SERVE_HTTPS: "True"
   SERVICE_BASE_URL: https://assisted-service-assisted-installer.apps.dev.redhat.com
   SERVICE_CA_CERT_PATH: /etc/assisted-ingress-cert/ca-bundle.crt
-  SKIP_CERT_VERIFICATION: "False"
+  SKIP_CERT_VERIFICATION: "True"
   STORAGE: filesystem
 kind: ConfigMap
 metadata:
