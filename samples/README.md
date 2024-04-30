@@ -120,4 +120,13 @@ Removing the live iso should not be done from BMH, otherwise the BMH deprovision
 bmh-vm-01   deprovisioning              true             5d4h
 ```
 
+Change the boot order via redfish:
+```
+curl-X PATCH -H "content-type:application/json" --data '{"Boot":{"BootSourceOverideEnabled":"Continuous", "BootSourceOverrideTarget":"Hdd", "BootOrder":["Hdd"]}}' http://192.168.222.1:8000/redfish/v1/Systems/d0148987-b19f-4604-bd4a-7bf93397e9eb
+```
+
+Restart via redfish,
+```
+curl http://192.168.222.1:8000/redfish/v1/Systems/d0148987-b19f-4604-bd4a-7bf93397e9eb/Actions/ComputerSystem.Reset -H "content-type:application/json" --data '{"ResetType":"ForceRestart"}' -X POST
+```
 
