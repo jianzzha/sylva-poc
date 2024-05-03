@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- clusterdeployments.hive.openshift.io.yaml
+- clusterimagesets.hive.openshift.io.yaml
+- assisted-image-service-service.yaml
+- assisted-service-configmap.yaml
+- object-storage-pvc.yaml
+- postgres-storage.yaml
+- assisted-image-service.yaml
+- assisted-service-service.yaml
+- object-store-deployment.yaml
+- assisted-installer-local-auth.yaml
+- assisted-service.yaml
+- postgres-deployment.yaml
+- resources.yaml
+- assisted-installer-sso.yaml
+- postgres-secret.yaml
+- secret.yaml
+
