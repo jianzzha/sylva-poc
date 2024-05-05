@@ -27,8 +27,3 @@ podman run --name sushy-tools --rm --network host --privileged -d \
   -e SUSHY_EMULATOR_CONFIG=/etc/sushy/sushy-emulator.conf \
   quay.io/metal3-io/sushy-tools:latest sushy-emulator
 
-echo "Delete VM bmh-vm-01 and set up a new one"
-virsh destroy bmh-vm-01 2>/dev/null || true
-virsh undefine --domain bmh-vm-01 --remove-all-storage --nvram 2>/dev/null || true
-virt-install -n bmh-vm-01 --pxe --os-variant=rhel8.0 --ram=16384 --vcpus=8 --network bridge=baremetal,mac=00:60:2f:31:81:01 --disk size=120,bus=scsi,sparse=yes --check disk_size=off --noautoconsole
-

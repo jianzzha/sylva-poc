@@ -10,10 +10,10 @@ stringData:
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
-  name: bmh-vm-01
+  name: REPLACE_NAME
 spec:
   online: true
-  bootMACAddress: 00:60:2f:31:81:01 
+  bootMACAddress: REPLACE_MAC
   bootMode: UEFI
   bmc:
     address: redfish-virtualmedia+http://192.168.222.1:8000/redfish/v1/Systems/REPLACE_ID

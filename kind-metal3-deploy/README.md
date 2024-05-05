@@ -1,9 +1,11 @@
 # Running KIND with VM Emulated Baremetal Machine
 
-Bring up a virtual mchine for testing,
+Bring up testing infrastructure,
 ```
 ./setup_vm_infra.sh
 ```
+
+The above script will set up a baremetal bridge, add a MASQUERADE rules on on the baremetal bridge for VM internet access, start a dnsmasq pod and a sushy emulator pod on the baremetal bridge, and start the virtual machine on the baremetal bridge,
 
 Bring up the KIND cluster,
 ```
@@ -25,25 +27,29 @@ Start baremetal operator,
 kubectl apply -k ../manifests/bmo
 ```
 
-The above script will set up a baremetal bridge, add a MASQUERADE rules on on the baremetal bridge for VM internet access, start a dnsmasq pod and a sushy emulator pod on the baremetal bridge, and start the virtual machine on the baremetal bridge,
- 
-Add this virtual machine as a baremetal host,
+Add a baremetal host,
 ```
 ./vm_bmh.sh start
 ```
 
-At this moment, this script only expect one VM.
+This will create a VM and create a BMH for this VM. This VM will go through BMH inspection phase and end up in an available state.
 
-This VM will go through BMH inspection phase and end up in an available state.
+To add multiple baremetal hosts (maximum 9) in one shot, say 5 BMH,
+```
+./vm_bmh.sh start 5
+```
 
 ## Cleanup
 
-First delete the VM emulated BMH,
+Delete the BMH,
 ```
 ./vm_bmh.sh stop
 ```
 
-This should should shutdown the VM.
+Optionally, VM can also be removed with the BMH,
+```
+./vm_bmh.sh stop -r
+```
 
 Delete the ironic and baremetal operator,
 ```
@@ -51,8 +57,10 @@ kubectl delete -k ../manifests/bmo
 kubectl delete -k ../manifests/ironic
 ```
 
-Then clean up VM and infrastructure,
+Then clean up the test infrastructure,
 ```
 ./cleanup_vm_infra.sh
 ```
+
+The VMs should be removed before the test infrastructure can be removed.
 

@@ -2,10 +2,6 @@
 set -eu
 set -o pipefail
 
-echo "delete VM bmh-vm-01"
-virsh destroy bmh-vm-01 2>/dev/null || true
-virsh undefine --domain bmh-vm-01 --remove-all-storage --nvram 2>/dev/null || true
-
 for podname in sushy-tools poseidon-dnsmasq; do
     if [[ -n $(podman  ps --filter "name=${podname}" --format "{{.Names}}") ]]; then
         echo "stop ${podname}"
