@@ -38,8 +38,7 @@ elif [[ $1 == "stop" ]]; then
     while IFS= read -r systemid; do
 	echo "stop VM BMH with systemid: ${systemid} ... "
 	name=$(curl -s 192.168.222.1:8000${systemid} | jq -r '.Name')
-	mac=$(get_mac_from_systemid ${systemid})
-        sed -r "s%redfish-virtualmedia.*REPLACE_ID%redfish-virtualmedia+http://192.168.222.1:8000${systemid}%" $(dirname $0)/vm.yaml | sed -r "s/REPLACE_NAME/${name}/g" | sed -r "s/REPLACE_MAC/${mac}/g" | kubectl delete -f - || true
+	kubectl delete bmh ${name}
 	if [[ $# -gt 1 && "$2" == '-r' ]]; then
 	    echo "delete VM ${name}"
             virsh destroy ${name} 2>/dev/null || true
