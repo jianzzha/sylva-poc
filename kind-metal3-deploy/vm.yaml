@@ -14,7 +14,7 @@ metadata:
 spec:
   online: true
   bootMACAddress: REPLACE_MAC
-  bootMode: UEFI
+  bootMode: legacy
   bmc:
     address: redfish-virtualmedia+http://192.168.222.1:8000/redfish/v1/Systems/REPLACE_ID
     credentialsName: bmh-vm-secret
