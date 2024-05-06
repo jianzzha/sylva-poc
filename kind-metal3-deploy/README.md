@@ -5,7 +5,7 @@ Bring up testing infrastructure,
 ./setup_vm_infra.sh
 ```
 
-The above script will set up a baremetal bridge, add a MASQUERADE rules on on the baremetal bridge for VM internet access, start a dnsmasq pod and a sushy emulator pod on the baremetal bridge, and start the virtual machine on the baremetal bridge,
+The above script will set up a libvirt network "bmh", start a sushy emulator pod.
 
 Bring up the KIND cluster,
 ```
