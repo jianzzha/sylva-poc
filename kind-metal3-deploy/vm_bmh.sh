@@ -38,7 +38,9 @@ elif [[ $1 == "stop" ]]; then
     while IFS= read -r systemid; do
 	echo "stop VM BMH with systemid: ${systemid} ... "
 	name=$(curl -s 192.168.222.1:8000${systemid} | jq -r '.Name')
-	kubectl delete bmh ${name}
+	if kubectl get bmh ${name} >/dev/null 2>&1; then
+	    kubectl delete bmh ${name}
+	fi
 	if [[ $# -gt 1 && "$2" == '-r' ]]; then
 	    echo "delete VM ${name}"
             virsh destroy ${name} 2>/dev/null || true
