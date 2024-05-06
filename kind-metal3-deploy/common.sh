@@ -67,7 +67,7 @@ function create_vm {
 	    return 0
 	fi
     fi
-    virt-install -n "${name}" --pxe --os-variant=rhel8.0 --ram=16384 --vcpus=8 --network bridge=baremetal,mac="${mac}" --disk size=120,bus=scsi,sparse=yes --check disk_size=off --noautoconsole
+    virt-install -n "${name}" --pxe --os-variant=rhel8.0 --ram=16384 --vcpus=8 --network bridge=baremetal,mac="${mac}" --disk size=120,bus=scsi,sparse=yes --check disk_size=off --noautoconsole --serial pty --graphics none
 }
 
 
