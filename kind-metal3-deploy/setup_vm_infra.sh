@@ -2,23 +2,9 @@
 set -eu
 set -o pipefail
 
-echo "setup baremetal interface"
-nmcli con down baremetal 2>/dev/null || true
-nmcli con del baremetal 2>/dev/null || true
-nmcli con add type bridge ifname baremetal con-name baremetal ipv4.method manual ipv4.addr 192.168.222.1/24 ipv4.dns 192.168.222.1 ipv4.dns-priority 10 autoconnect yes bridge.stp no
-nmcli con reload baremetal
-nmcli con up baremetal
-
-echo "Add MASQUERADE rules on baremetal"
-EXT_IF=$(ip route get 1 | grep -oP 'dev \K\S+')
-if [[ -n "${EXT_IF}" ]]; then
-    sudo iptables -t nat -A POSTROUTING -s 192.168.222.0/24 ! -d 192.168.222.0/24 -o ${EXT_IF} -j MASQUERADE
-fi
-
-echo "starting poseidon-dnsmasq pod"
-podman run --name poseidon-dnsmasq --rm -d --net=host --privileged \
-           -v $(dirname $0)/dnsmasq.conf:/etc/dnsmasq.conf \
-	   quay.io/poseidon/dnsmasq --conf-file=/etc/dnsmasq.conf -d
+echo "start libvirt network bmh"
+virsh net-define $(dirname $0)/libvirt/net/bmh.xml
+virsh net-start bmh
 
 echo "starting sushy emulator pod"
 podman run --name sushy-tools --rm --network host --privileged -d \

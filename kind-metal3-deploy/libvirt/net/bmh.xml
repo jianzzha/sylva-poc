@@ -1,0 +1,28 @@
+<network xmlns:dnsmasq='http://libvirt.org/schemas/network/dnsmasq/1.0' connections='1'>
+  <name>bmh</name>
+  <domain name='lab.home'/>
+  <forward mode='nat'/>
+  <bridge name='baremetal' stp='on' delay='0'/>
+  <mac address='58:58:00:00:00:01'/>
+  <ip address='192.168.222.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.222.2' end='192.168.222.254'/>
+      <host mac='00:60:2f:31:81:01' name='okd-sno' ip='192.168.222.31'/>
+      <host mac='00:60:2f:31:81:02' name='node2' ip='192.168.222.32'/>
+      <host mac='00:60:2f:31:81:03' name='node3' ip='192.168.222.33'/>
+      <host mac='00:60:2f:31:81:04' name='node4' ip='192.168.222.34'/>
+      <host mac='00:60:2f:31:81:05' name='node5' ip='192.168.222.35'/>
+      <host mac='00:60:2f:31:81:06' name='node6' ip='192.168.222.36'/>
+      <host mac='00:60:2f:31:81:07' name='node7' ip='192.168.222.37'/>
+      <host mac='00:60:2f:31:81:08' name='node8' ip='192.168.222.38'/>
+      <host mac='00:60:2f:31:81:09' name='node9' ip='192.168.222.39'/>
+    </dhcp>
+  </ip>
+  <dnsmasq:options>
+    <dnsmasq:option value='local=/lab.home/'/>
+    <dnsmasq:option value='address=/api.okd-sno.lab.home/192.168.222.31'/>
+    <dnsmasq:option value='address=/api-int.okd-sno.lab.home/192.168.222.31'/>
+    <dnsmasq:option value='address=/.apps.okd-sno.lab.home/192.168.222.31'/>
+  </dnsmasq:options>
+</network>
+
