@@ -30,7 +30,7 @@ spec:
           value: http://10.89.1.240:8080
         - name: ALLOWED_DOMAINS
           value: '*'
-        image: quay.io/edge-infrastructure/assisted-image-service:latest
+        image: {{ .Values.assistedImage.image.repository }}:{{ .Values.assistedImage.image.tag | default "latest" }}
         livenessProbe:
           httpGet:
             path: /live

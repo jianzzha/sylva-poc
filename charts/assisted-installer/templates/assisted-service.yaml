@@ -110,20 +110,20 @@ spec:
         envFrom:
         - configMapRef:
             name: assisted-service-config
-        image: quay.io/edge-infrastructure/assisted-service:latest
+        image: {{ .Values.assistedService.image.repository }}:{{ .Values.assistedService.image.tag | default "latest" }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /health
-            port: 8090
+            port: {{ .Values.assistedService.port }}
           initialDelaySeconds: 30
         name: assisted-service
         ports:
-        - containerPort: 8090
+        - containerPort: {{ .Values.assistedService.port }} 
         readinessProbe:
           httpGet:
             path: /ready
-            port: 8090
+            port: {{ .Values.assistedService.port }}
           initialDelaySeconds: 30
         resources:
           limits:

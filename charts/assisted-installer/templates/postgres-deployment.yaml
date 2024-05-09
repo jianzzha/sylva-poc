@@ -30,7 +30,7 @@ spec:
             secretKeyRef:
               key: db.password
               name: assisted-installer-rds
-        image: quay.io/sclorg/postgresql-12-c8s
+        image: {{ .Values.postgres.image.repository }}
         imagePullPolicy: IfNotPresent
         name: postgres
         ports:

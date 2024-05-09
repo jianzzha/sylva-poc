@@ -14,6 +14,13 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+namespace:
+  name: assisted-installer
+
+rbac:
+  # create specifies whether to install and use RBAC rules.
+  create: true
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -24,6 +31,24 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
+
+assistedService:
+  image:
+    repository: quay.io/edge-infrastructure/assisted-service
+    tag: latest
+  serviceAccount:
+    create: true
+  port: 8090
+
+assistedImage:
+  image:
+    repository: quay.io/edge-infrastructure/assisted-image-service
+    tag: latest
+  port: 8080
+
+postgres:
+  image:
+    repository: quay.io/sclorg/postgresql-12-c8s
 
 podAnnotations: {}
 podLabels: {}
