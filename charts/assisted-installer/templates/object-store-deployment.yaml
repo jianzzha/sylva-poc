@@ -30,7 +30,7 @@ spec:
             secretKeyRef:
               key: aws_access_key_id
               name: assisted-installer-s3
-        image: quay.io/minio/minio:latest
+        image: {{ .Values.minio.image.repository }}:{{ .Values.minio.image.tag | default "latest" }}
         name: s3server
         resources:
           limits:

@@ -49,6 +49,12 @@ assistedImage:
 postgres:
   image:
     repository: quay.io/sclorg/postgresql-12-c8s
+    tag: latest
+
+minio:
+  image:
+    repository: quay.io/minio/minio
+    tag: latest
 
 podAnnotations: {}
 podLabels: {}

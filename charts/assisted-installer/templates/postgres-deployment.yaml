@@ -30,7 +30,7 @@ spec:
             secretKeyRef:
               key: db.password
               name: assisted-installer-rds
-        image: {{ .Values.postgres.image.repository }}
+          image: {{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}
         imagePullPolicy: IfNotPresent
         name: postgres
         ports:
