@@ -27,7 +27,7 @@ spec:
         - name: ASSISTED_SERVICE_HOST
           value: assisted-service:8090
         - name: IMAGE_SERVICE_BASE_URL
-          value: http://10.89.1.240:8080
+          value: http://{{ .Values.ingress.host }}
         - name: ALLOWED_DOMAINS
           value: '*'
         image: {{ .Values.assistedImage.image.repository }}:{{ .Values.assistedImage.image.tag | default "latest" }}

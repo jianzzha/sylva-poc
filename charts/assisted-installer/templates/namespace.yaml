@@ -1,6 +1,9 @@
+{{- if .Values.createNamespace }}
 apiVersion: v1
 kind: Namespace
 metadata:
   name: "assisted-installer"
   labels:
     name: "assisted-installer"
+{{- end }}
+

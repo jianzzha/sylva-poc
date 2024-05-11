@@ -6,8 +6,9 @@ metadata:
   annotations:
     haproxy.router.openshift.io/timeout: 120s
 spec:
+  ingressClassName: nginx
   rules:
-    - host: localhost.localdomain
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
           - path: "/api"
