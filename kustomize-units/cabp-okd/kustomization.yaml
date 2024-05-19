@@ -3,4 +3,7 @@ kind: Kustomization
 resources:
   - https://github.com/openshift-assisted/cluster-api-agent/releases/latest/download/bootstrap-components.yaml
   - https://github.com/openshift-assisted/cluster-api-agent/releases/latest/download/controlplane-components.yaml
+labels:
+  - pairs:
+      clusterctl.cluster.x-k8s.io: ""
 
