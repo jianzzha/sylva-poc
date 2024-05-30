@@ -1,0 +1,43 @@
+apiVersion: v1
+data:
+  ADMIN_USERS: ercohen,lgamliel,mfilanov,ygoldber
+  AGENT_DOCKER_IMAGE: quay.io/edge-infrastructure/assisted-installer-agent:latest
+  AUTH_TYPE: none
+  BASE_DNS_DOMAINS: ''
+  CHECK_CLUSTER_VERSION: 'False'
+  CONTROLLER_IMAGE: quay.io/edge-infrastructure/assisted-installer-controller:latest
+  CREATE_S3_BUCKET: 'true'
+  DISABLED_HOST_VALIDATIONS: ''
+  DISABLED_STEPS: ''
+  DISK_ENCRYPTION_SUPPORT: 'True'
+  ENABLE_AUTO_ASSIGN: 'true'
+  ENABLE_KUBE_API: 'true'
+  ENABLE_ORG_BASED_FEATURE_GATES: 'False'
+  ENABLE_ORG_TENANCY: 'False'
+  ENABLE_SINGLE_NODE_DNSMASQ: 'True'
+  HW_VALIDATOR_REQUIREMENTS: '[{"version":"default","master":{"cpu_cores":4,"ram_mib":16384,"disk_size_gb":100,"installation_disk_speed_threshold_ms":10,"network_latency_threshold_ms":100,"packet_loss_percentage":0},"worker":{"cpu_cores":2,"ram_mib":8192,"disk_size_gb":100,"installation_disk_speed_threshold_ms":10,"network_latency_threshold_ms":1000,"packet_loss_percentage":10},"sno":{"cpu_cores":8,"ram_mib":16384,"disk_size_gb":100,"installation_disk_speed_threshold_ms":10},"edge-worker":{"cpu_cores":2,"ram_mib":8192,"disk_size_gb":15,"installation_disk_speed_threshold_ms":10}}]'
+  IGNORED_OPENSHIFT_VERSIONS: ''
+  IMAGE_SERVICE_BASE_URL: http://{{ .Values.ingress.host }}
+  INSTALLER_IMAGE: quay.io/edge-infrastructure/assisted-installer:latest
+  IPV6_SUPPORT: 'True'
+  ISO_IMAGE_TYPE: full-iso
+  JWKS_URL: https://api.openshift.com/.well-known/jwks.json
+  MUST_GATHER_IMAGES: '{"4.8-x86_64":{"cnv":"registry.redhat.io/container-native-virtualization/cnv-must-gather-rhel8:v2.6.5","ocs":"registry.redhat.io/ocs4/ocs-must-gather-rhel8:v4.8","lso":"registry.redhat.io/openshift4/ose-local-storage-mustgather-rhel8:v4.8"},"4.9-x86_64":{"cnv":"registry.redhat.io/container-native-virtualization/cnv-must-gather-rhel8:v4.9.3","ocs":"registry.redhat.io/odf4/ocs-must-gather-rhel8:v4.9","lso":"registry.redhat.io/openshift4/ose-local-storage-mustgather-rhel8:v4.9"},"4.10-x86_64":{"cnv":"registry.redhat.io/container-native-virtualization/cnv-must-gather-rhel8:v4.10.0","ocs":"registry.redhat.io/odf4/ocs-must-gather-rhel8:v4.10","lso":"registry.redhat.io/openshift4/ose-local-storage-mustgather-rhel8:v4.10"},"4.10-arm64":{"ocs":"registry.redhat.io/odf4/ocs-must-gather-rhel8:v4.10","lso":"registry.redhat.io/openshift4/ose-local-storage-mustgather-rhel8:v4.10"}}'
+  NAMESPACE: assisted-installer
+  OCM_BASE_URL: https://api-integration.6943.hive-integration.openshiftapps.com
+  OPENSHIFT_RELEASE_SYNCER_INTERVAL: 30m
+  OS_IMAGES: '{{ .Values.osImages }}'
+  PUBLIC_CONTAINER_REGISTRIES: quay.io
+  RELEASE_IMAGES: '{{ .Values.releaseImages }}'
+  RELEASE_SOURCES: ''
+  SELF_VERSION: quay.io/edge-infrastructure/assisted-service:latest
+  SERVICE_BASE_URL: http://{{ .Values.ingress.host }}
+  SKIP_CERT_VERIFICATION: 'true'
+  SKIP_SPOKE: "true"
+  STORAGE: filesystem
+kind: ConfigMap
+metadata:
+  labels:
+    app: assisted-service
+  name: assisted-service-config
+  namespace: assisted-installer

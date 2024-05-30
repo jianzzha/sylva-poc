@@ -1,0 +1,120 @@
+# Default values for assisted-installer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+createNamespace: false
+
+rbac:
+  # create specifies whether to install and use RBAC rules.
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+assistedService:
+  image:
+    repository: quay.io/edge-infrastructure/assisted-service
+    tag: latest
+  serviceAccount:
+    create: true
+  port: 8090
+
+assistedImage:
+  image:
+    repository: quay.io/edge-infrastructure/assisted-image-service
+    tag: latest
+  port: 8080
+
+postgres:
+  image:
+    repository: quay.io/sclorg/postgresql-12-c8s
+    tag: latest
+
+minio:
+  image:
+    repository: quay.io/minio/minio
+    tag: latest
+
+ingress:
+  enabled: false
+  ingressClassName: nginx
+  host: assisted.com
+
+osImages: '[{"openshift_version":"4.14","cpu_architecture":"x86_64","url":"https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/4.14/4.14.15/rhcos-4.14.15-x86_64-live.x86_64.iso","version":"414.92.202402130420-0"}]'
+
+releaseImages: '[{"openshift_version":"4.9","cpu_architecture":"x86_64","cpu_architectures":["x86_64"],"url":"quay.io/openshift-release-dev/ocp-release:4.9.59-x86_64","version":"4.9.59"},{"openshift_version":"4.10","cpu_architecture":"x86_64","cpu_architectures":["x86_64"],"url":"quay.io/openshift-release-dev/ocp-release:4.10.67-x86_64","version":"4.10.67"},{"openshift_version":"4.10","cpu_architecture":"arm64","cpu_architectures":["arm64"],"url":"quay.io/openshift-release-dev/ocp-release:4.10.67-aarch64","version":"4.10.67"},{"openshift_version":"4.11","cpu_architecture":"x86_64","cpu_architectures":["x86_64"],"url":"quay.io/openshift-release-dev/ocp-release:4.11.59-x86_64","version":"4.11.59"},{"openshift_version":"4.11","cpu_architecture":"arm64","cpu_architectures":["arm64"],"url":"quay.io/openshift-release-dev/ocp-release:4.11.59-aarch64","version":"4.11.59"},{"openshift_version":"4.11.0-multi","cpu_architecture":"multi","cpu_architectures":["x86_64","arm64","ppc64le","s390x"],"url":"quay.io/openshift-release-dev/ocp-release:4.11.0-multi","version":"4.11.0-multi"},{"openshift_version":"4.12","cpu_architecture":"x86_64","cpu_architectures":["x86_64"],"url":"quay.io/openshift-release-dev/ocp-release:4.12.54-x86_64","version":"4.12.54"},{"openshift_version":"4.12","cpu_architecture":"arm64","cpu_architectures":["arm64"],"url":"quay.io/openshift-release-dev/ocp-release:4.12.54-aarch64","version":"4.12.54"},{"openshift_version":"4.12-multi","cpu_architecture":"multi","cpu_architectures":["x86_64","arm64","ppc64le","s390x"],"url":"quay.io/openshift-release-dev/ocp-release:4.12.54-multi","version":"4.12.54-multi"},{"openshift_version":"4.13","cpu_architecture":"x86_64","cpu_architectures":["x86_64"],"url":"quay.io/openshift-release-dev/ocp-release:4.13.38-x86_64","version":"4.13.38"},{"openshift_version":"4.13","cpu_architecture":"arm64","cpu_architectures":["arm64"],"url":"quay.io/openshift-release-dev/ocp-release:4.13.38-aarch64","version":"4.13.38"},{"openshift_version":"4.13-multi","cpu_architecture":"multi","cpu_architectures":["x86_64","arm64","ppc64le","s390x"],"url":"quay.io/openshift-release-dev/ocp-release:4.13.38-multi","version":"4.13.38-multi"},{"openshift_version":"4.14","cpu_architecture":"x86_64","cpu_architectures":["x86_64"],"url":"quay.io/openshift-release-dev/ocp-release:4.14.19-x86_64","version":"4.14.19"},{"openshift_version":"4.14","cpu_architecture":"arm64","cpu_architectures":["arm64"],"url":"quay.io/openshift-release-dev/ocp-release:4.14.19-aarch64","version":"4.14.19"},{"openshift_version":"4.14-multi","cpu_architecture":"multi","cpu_architectures":["x86_64","arm64","ppc64le","s390x"],"url":"quay.io/openshift-release-dev/ocp-release:4.14.19-multi","version":"4.14.19-multi"},{"openshift_version":"4.15","cpu_architecture":"x86_64","cpu_architectures":["x86_64"],"url":"quay.io/openshift-release-dev/ocp-release:4.15.6-x86_64","version":"4.15.6","default":true},{"openshift_version":"4.15","cpu_architecture":"arm64","cpu_architectures":["arm64"],"url":"quay.io/openshift-release-dev/ocp-release:4.15.6-aarch64","version":"4.15.6"},{"openshift_version":"4.15-multi","cpu_architecture":"multi","cpu_architectures":["x86_64","arm64","ppc64le","s390x"],"url":"quay.io/openshift-release-dev/ocp-release:4.15.6-multi","version":"4.15.6-multi"},{"openshift_version":"4.16","cpu_architecture":"x86_64","cpu_architectures":["x86_64"],"url":"quay.io/openshift-release-dev/ocp-release:4.16.0-ec.4-x86_64","support_level":"beta","version":"4.16.0-ec.4"},{"openshift_version":"4.16","cpu_architecture":"arm64","cpu_architectures":["arm64"],"url":"quay.io/openshift-release-dev/ocp-release:4.16.0-ec.4-aarch64","support_level":"beta","version":"4.16.0-ec.4"},{"openshift_version":"4.16-multi","cpu_architecture":"multi","cpu_architectures":["x86_64","arm64","ppc64le","s390x"],"url":"quay.io/openshift-release-dev/ocp-release:4.16.0-ec.4-multi","support_level":"beta","version":"4.16.0-ec.4-multi"}]'
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

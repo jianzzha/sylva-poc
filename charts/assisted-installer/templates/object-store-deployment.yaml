@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: object-store
+  name: object-store
+  namespace: assisted-installer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: object-store
+  template:
+    metadata:
+      labels:
+        app: object-store
+    spec:
+      containers:
+      - args:
+        - server
+        - /data
+        env:
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: aws_secret_access_key
+              name: assisted-installer-s3
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              key: aws_access_key_id
+              name: assisted-installer-s3
+        image: {{ .Values.minio.image.repository }}:{{ .Values.minio.image.tag | default "latest" }}
+        name: s3server
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2000Mi
+          requests:
+            cpu: 300m
+            memory: 2000Mi
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: object-store
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: object-store
+  name: object-store
+  namespace: assisted-installer
+spec:
+  ports:
+  - name: object-store
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: object-store
+  type: LoadBalancer
+status:
+  loadBalancer: {}

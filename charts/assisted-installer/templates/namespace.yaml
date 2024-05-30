@@ -1,0 +1,11 @@
+{{- if .Values.createNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "assisted-installer"
+  labels:
+    name: "assisted-installer"
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce-version: latest
+{{- end }}
+
