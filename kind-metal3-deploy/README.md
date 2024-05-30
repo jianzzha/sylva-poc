@@ -39,6 +39,9 @@ To add multiple baremetal hosts (maximum 9) in one shot, say 5 BMH,
 ./vm_bmh.sh start 5
 ```
 
+Optionally metallb and ingress can be installed - they are needed for assisted installer service in KIND,
+./install_ingress_lb.sh
+
 ## Cleanup
 
 Delete the BMH,
