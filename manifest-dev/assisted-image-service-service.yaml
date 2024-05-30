@@ -15,4 +15,5 @@ spec:
     targetPort: 8080
   selector:
     app: assisted-image-service
-  #type: LoadBalancer
+  type: LoadBalancer
+  loadBalancerIP: 10.89.1.241

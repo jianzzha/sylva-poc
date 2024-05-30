@@ -15,6 +15,7 @@ spec:
     targetPort: 8090
   selector:
     app: assisted-service
-  #type: LoadBalancer
+  type: LoadBalancer
+  loadBalancerIP: 10.89.1.242
 status:
   loadBalancer: {}
