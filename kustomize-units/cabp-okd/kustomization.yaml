@@ -1,8 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - https://github.com/openshift-assisted/cluster-api-agent/releases/latest/download/bootstrap-components.yaml
-  - https://github.com/openshift-assisted/cluster-api-agent/releases/latest/download/controlplane-components.yaml
+  - https://github.com/openshift-assisted/cluster-api-agent/releases/download/v0.1.2/bootstrap-components.yaml
+  - https://github.com/openshift-assisted/cluster-api-agent/releases/download/v0.1.2/controlplane-components.yaml
 patches:
   - target:
       version: v1
