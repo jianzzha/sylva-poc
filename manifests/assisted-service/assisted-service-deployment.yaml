@@ -166,8 +166,8 @@ spec:
         secret:
           defaultMode: 420
           secretName: assisted-service
-      - configMap:
+      - secret:
           defaultMode: 420
-          name: default-ingress-cert
+          secretName: default-ingress-cert
         name: ingress-cert
 
