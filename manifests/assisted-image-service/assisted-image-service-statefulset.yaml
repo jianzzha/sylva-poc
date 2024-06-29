@@ -30,8 +30,8 @@ spec:
           value: /etc/image-service/certs/tls.crt
         - name: HTTPS_KEY_FILE
           value: /etc/image-service/certs/tls.key
-        - name: HTTPS_CA_FILE
-          value: /etc/image-service/ca-bundle/service-ca.crt
+        - name: ASSISTED_SERVICE_API_TRUSTED_CA_FILE
+          value: /etc/image-service/ca-bundle/ca.crt
         - name: ASSISTED_SERVICE_SCHEME
           value: https
         - name: ASSISTED_SERVICE_HOST
@@ -105,9 +105,9 @@ spec:
         secret:
           defaultMode: 420
           secretName: assisted-image-service
-      - configMap:
+      - secret:
           defaultMode: 420
-          name: assisted-image-service
+          secretName: assisted-service
         name: service-cabundle
       - name: image-service-data
         emptyDir: {}

@@ -3,9 +3,11 @@ kind: Kustomization
 namespace: assisted-installer
 resources:
   - ./rbac
-  - secret.yaml
+  - agentinstalladmission-certificate.yaml
   - agentinstalladmission-deployment.yaml
+  - agentinstalladmission-service.yaml
+  - agentinstalladmission-webhooks.yaml
+  - agentinstalladmission-apiservice.yaml
 images:
 - name: quay.io/edge-infrastructure/assisted-service
   newTag: ocm-2.10
-
