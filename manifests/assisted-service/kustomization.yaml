@@ -5,13 +5,13 @@ resources:
 - ./crds
 - ./rbac
 - pvc.yaml
-- ingress-cert.yaml
 - assisted-service-configmap.yaml
 - assisted-servicelocal-auth-secret.yaml
-- assisted-service-secret.yaml
+- assisted-service-certificates.yaml
 - postgres-secret.yaml
 - assisted-service-deployment.yaml
 - assisted-service-svc.yaml
+- assisted-service-ingress.yaml
 images:
 - name: quay.io/edge-infrastructure/assisted-service
   newTag: ocm-2.10
