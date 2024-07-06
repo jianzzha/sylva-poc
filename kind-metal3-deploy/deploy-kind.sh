@@ -25,6 +25,18 @@ while getopts 'v:n:h' opt; do
 done
 shift "$(($OPTIND -1))"
 
+if ! command -v helm &> /dev/null; then
+    echo "helm not found, installing ..."
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+fi
+
+if ! command -v clusterctl &> /dev/null; then
+    echo "clusterctl not found, installing ..."
+    curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.7.3/clusterctl-linux-arm64 -o clusterctl
+    install -o root -g root -m 0755 clusterctl /usr/local/bin/clusterctl
+    rm -rf clusterctl
+fi
+
 kind delete cluster
 kind create cluster --config $(dirname $0)/kind.yaml
 
