@@ -16,5 +16,7 @@ kubectl patch configmap/ingress-nginx-controller -n  ingress-nginx --type merge 
 
 ingress_ip=$(kubectl get svc  -n ingress-nginx ingress-nginx-controller  --no-headers --output=custom-columns=:.status.loadBalancer.ingress[0].ip)
 
-virsh net-update bmh add dns-host "<host ip='${ingress_ip}'><hostname>assisted.com</hostname></host>" --live --config
+if virsh net-list bmh >/dev/null 2>&1; then
+    virsh net-update bmh add dns-host "<host ip='${ingress_ip}'><hostname>assisted.com</hostname></host>" --live --config
+fi
 
