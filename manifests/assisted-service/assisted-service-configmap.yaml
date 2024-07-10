@@ -68,7 +68,7 @@ data:
   SELF_VERSION: quay.io/edge-infrastructure/assisted-service@sha256:0b4dd48807e19d15c14efb8b49f0c00fe7ac440bb615e1fb269a24d314e01465
   SERVE_HTTPS: "True"
   SERVICE_BASE_URL: https://assisted-service-assisted-installer.apps.dev.redhat.com
-  SERVICE_CA_CERT_PATH: /etc/assisted-ingress-cert/ca-bundle.crt
+  SERVICE_CA_CERT_PATH: /etc/assisted-ingress-cert/ca.crt
   SKIP_CERT_VERIFICATION: "True"
   STORAGE: filesystem
 kind: ConfigMap

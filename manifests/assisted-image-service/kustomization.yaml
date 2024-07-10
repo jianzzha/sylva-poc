@@ -3,10 +3,10 @@ kind: Kustomization
 namespace: assisted-installer
 resources:
   - service_account.yaml
-  - assisted-image-service-configmap.yaml
-  - assisted-image-service-secret.yaml
+  - assisted-image-service-certificates.yaml
   - assisted-image-service-statefulset.yaml
   - assisted-image-service-svc.yaml
+  - assisted-image-service-ingress.yaml
 images:
 - name: quay.io/edge-infrastructure/assisted-image-service
   newTag: ocm-2.10
