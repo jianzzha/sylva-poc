@@ -8,7 +8,7 @@ set -o pipefail
 INSTALL=""
 NAMESPACE=""
 VMs=""
-while getopts 'n:vmkh' opt; do
+while getopts 'n:ovmkh' opt; do
   case "$opt" in
     m)
       INSTALL="HELM"
@@ -103,7 +103,7 @@ if [[ ${INSTALL} == "OPERATOR" ]]; then
     chmod u+x ~/assisted-service/setup_infra_operator.sh
     pushd ~/assisted-service
     ./setup_infra_operator.sh
-    kubectl apply -f agentconfig.yaml
     popd
+    kubectl apply -f agentconfig.yaml
 fi
 
