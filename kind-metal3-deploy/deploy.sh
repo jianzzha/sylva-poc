@@ -98,6 +98,9 @@ if [[ -n "$VMs" ]]; then
 fi
 
 if [[ ${INSTALL} == "OPERATOR" ]]; then
+    if [[ -d ~/assisted-service ]]; then
+	/bin/rm -rf ~/assisted-service
+    fi
     git clone https://github.com/openshift/assisted-service.git ~/assisted-service
     cp setup_infra_operator.sh ~/assisted-service
     chmod u+x ~/assisted-service/setup_infra_operator.sh
