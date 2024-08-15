@@ -81,7 +81,7 @@ if [[ ${INSTALL} == "HELM" ]]; then
     kubectl wait --for=condition=Available deployment object-store  -n assisted-installer
     kubectl wait --for=condition=Available deployment postgres -n assisted-installer
 elif [[ ${INSTALL} == "KUST" ]]; then 
-    kubectl apply -k ../manifests
+    kubectl apply -k ../manifests/infra-operator
 fi
 
 clusterctl init --bootstrap openshift-agent --control-plane openshift-agent -i  metal3:v1.7.0
