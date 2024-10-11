@@ -5,15 +5,25 @@ import sys
 import yaml
 import re
 import time
+import xml.etree.ElementTree as ET
+import subprocess
+
+
+def run_command(command):
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True)
+    return result.stdout.strip()
 
 def ssh_and_run_command(ip_address, username, password, command):
+    # if ip_address not provided, then run command locally
+    if not ip_address:
+        return run_command(command)
+
     # Set up the SSH client
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     try:
         # Connect to the server via SSH
-        print(f"Connecting to {ip_address}...")
         ssh.connect(ip_address, username=username, password=password)
         stdin, stdout, stderr = ssh.exec_command(command)
 
@@ -33,6 +43,58 @@ def ssh_and_run_command(ip_address, username, password, command):
     finally:
         ssh.close()
 
+def get_all_vms(ip_address, username, password):
+    command = "sudo virsh list --all --name"
+    output = ssh_and_run_command(ip_address, username, password, command)
+    return output
+
+def delete_vm_with_name(ip_address, username, password, vm_name):
+    commands = [
+            f"sudo virsh destroy {vm_name} 2>/dev/null || true",
+            f"sudo virsh undefine --domain {vm_name} --remove-all-storage --nvram  2>/dev/null || true"
+            ]
+    print(f"Delete domain '{vm_name}'")
+    for command in commands:
+        ssh_and_run_command(ip_address, username, password, command)
+        time.sleep(0.1)
+
+def mac_exist_on_bridge(xml_content, mac, bridge=None):
+    """
+    Return true if the named bridge has this mac address
+    """
+    root = ET.fromstring(xml_content)
+    if bridge is not None:
+        for interface in root.findall("./devices/interface"):
+            interface_type = interface.get("type")
+            if interface_type == "bridge":
+                mac_elem = interface.find("mac")
+                source_elem = interface.find("source")
+                if mac_elem is not None and source_elem is not None:
+                    if mac == mac_elem.get("address") and bridge == source_elem.get("bridge"):
+                        return True
+    else:
+        for interface in root.findall("./devices/interface/mac"):
+            if mac == interface.get("address"):
+                return True
+    return False
+
+
+def delete_vm_with_mac(ip_address, username, password, bridge, mac):
+    """
+    Delete a VM with a mac address on specified bridge
+
+    :param bridge: bridge name
+    :mac: mac address that belongs to the VM
+    """
+    print(f"Search for VM with mac {mac} on bridge {bridge}")
+    domains = get_all_vms(ip_address, username, password)
+    for domain in domains.split("\n"):
+        command = f"sudo virsh dumpxml {domain}"
+        xml_output = ssh_and_run_command(ip_address, username, password, command)
+        if mac_exist_on_bridge(xml_output, mac, bridge):
+            print(f"found {domain} with mac {mac} on bridge {bridge}")
+            delete_vm_with_name(ip_address, username, password, domain)
+            break
 
 def create_vm_and_get_uuid(ip_address, username, password, vm_name, mac, provision_mac="", extra_disk=False):
     """
@@ -47,6 +109,9 @@ def create_vm_and_get_uuid(ip_address, username, password, vm_name, mac, provisi
     :extra_disk: boolean, use extra disk
     :return: The UUID of the virtual machine.
     """
+    delete_vm_with_mac(ip_address, username, password, "baremetal", mac)
+    if provision_mac:
+        delete_vm_with_mac(ip_address, username, password, "provision", provision_mac)
     extra = ""
     if provision_mac != "":
         extra += f"--network bridge=provision,mac={provision_mac}"
@@ -54,19 +119,17 @@ def create_vm_and_get_uuid(ip_address, username, password, vm_name, mac, provisi
         extra += f"--disk size=600,bus=scsi,sparse=yes"
     # Sequence of commands to destroy and start the VM
     commands = [
-            f"sudo virsh destroy {vm_name} 2>/dev/null || true",
-            f"sudo virsh undefine --domain {vm_name} --remove-all-storage --nvram  2>/dev/null || true",
             f"sudo virt-install -n {vm_name} --pxe --os-variant=rhel8.0 --ram=16384 --vcpus=8 --network bridge=baremetal,mac={mac}  --disk size=600,bus=scsi,sparse=yes --check disk_size=off --noautoconsole --serial pty --graphics none {extra}"
             ]
     for command in commands:
         ssh_and_run_command(ip_address, username, password, command)
-        time.sleep(0.5)
+        time.sleep(0.1)
 
     # Command to get the VM's UUID
     uuid_command = f"sudo virsh domuuid {vm_name}"
     uuid_output = ssh_and_run_command(ip_address, username, password, uuid_command)
 
-    print(f"VM '{vm_name}' UUID: {uuid_output}")
+    print(f"Created VM '{vm_name}' with UUID: {uuid_output}")
     return uuid_output
 
 def generate_provsion_mac(mac):
@@ -89,8 +152,8 @@ def generate_values_yaml(ip_address, username, password, file_name, extra_disk=F
         if extra_int:
             provision_mac = generate_provsion_mac(mac)
         uuid = create_vm_and_get_uuid(ip_address, username, password, node, mac, provision_mac, extra_disk)
-        pattern = r'([a-f0-9\-]{36})'
-        v['bmh_spec']['bmc']['address'] = re.sub(pattern, uuid, v['bmh_spec']['bmc']['address'])
+        pattern = r'(redfish/v1/Systems).*'
+        v['bmh_spec']['bmc']['address'] = re.sub(pattern, r'\1/' + uuid, v['bmh_spec']['bmc']['address'])
     with open(file_name, 'w') as f:
         yaml.dump(data, f, default_flow_style=False)
 
