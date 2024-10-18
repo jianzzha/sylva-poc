@@ -166,16 +166,26 @@ def update_sylva_values_yaml(ip_address, username, password, file_name, extra_di
 def update_bmh_yaml(ip_address, username, password, file_name):
     print(f"Read yaml from {file_name}")
     try:
+        updated = False
+        updated_documents = []
         with open(file_name, 'r') as f:
-            data = list(yaml.safe_load_all(f))
-        for entry in data:
-            if entry['kind'] == 'BareMetalHost':
-                mac_address = entry['spec']['bootMACAddress']
-                name = entry['metadata']['name']
-                uuid = create_vm_and_get_uuid(ip_address, username, password, name, mac_address)
-                entry['spec']['bmc']['address'] = replace_bmc_uuid(entry['spec']['bmc']['address'], uuid)
-        with open(file_name, 'w') as f:
-             yaml.dump(data, f, default_flow_style=False)       
+            docs = yaml.safe_load_all(f)
+            for entry in docs:
+                if not entry:
+                    continue
+                if entry['kind'] == 'BareMetalHost':
+                    mac_address = entry['spec']['bootMACAddress']
+                    name = entry['metadata']['name']
+                    uuid = create_vm_and_get_uuid(ip_address, username, password, name, mac_address)
+                    entry['spec']['bmc']['address'] = replace_bmc_uuid(entry['spec']['bmc']['address'], uuid)
+                    updated = True
+                updated_documents.append(entry)
+        if updated:
+            print(f"Update {file_name}")
+            with open(file_name, 'w') as f:
+                yaml.dump_all(updated_documents, f, default_flow_style=False)
+        else:
+            print(f"Skip {file_name}")
     except Exception as e:
        print(f"Failed to handle {file_name}: {e}") 
 
