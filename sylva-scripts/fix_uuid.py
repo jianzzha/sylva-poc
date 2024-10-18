@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import argparse
 import paramiko
 import sys
@@ -7,6 +8,7 @@ import re
 import time
 import xml.etree.ElementTree as ET
 import subprocess
+import enum
 
 
 def run_command(command):
@@ -142,7 +144,11 @@ def generate_provsion_mac(mac):
     inverted_mac = ":".join(octets)
     return inverted_mac
 
-def generate_values_yaml(ip_address, username, password, file_name, extra_disk=False, extra_int=False):
+def replace_bmc_uuid(bmc_url, uuid):
+    pattern = r'(redfish/v1/Systems).*'
+    return re.sub(pattern, r'\1/' + uuid, bmc_url)
+
+def update_sylva_values_yaml(ip_address, username, password, file_name, extra_disk=False, extra_int=False):
     print(f"Read yaml from {file_name}")
     with open(file_name, 'r') as f:
         data=yaml.safe_load(f)
@@ -157,17 +163,48 @@ def generate_values_yaml(ip_address, username, password, file_name, extra_disk=F
     with open(file_name, 'w') as f:
         yaml.dump(data, f, default_flow_style=False)
 
+def update_bmh_yaml(ip_address, username, password, file_name):
+    print(f"Read yaml from {file_name}")
+    try:
+        with open(file_name, 'r') as f:
+            data = list(yaml.safe_load_all(f))
+        for entry in data:
+            if entry['kind'] == 'BareMetalHost':
+                mac_address = entry['spec']['bootMACAddress']
+                name = entry['metadata']['name']
+                uuid = create_vm_and_get_uuid(ip_address, username, password, name, mac_address)
+                entry['spec']['bmc']['address'] = replace_bmc_uuid(entry['spec']['bmc']['address'], uuid)
+        with open(file_name, 'w') as f:
+             yaml.dump(data, f, default_flow_style=False)       
+    except Exception as e:
+       print(f"Failed to handle {file_name}: {e}") 
+
+class InputType(enum.Enum):
+    SYLVA = "SYLVA"
+    BMH = "BMH"
+
+def yaml_type(value):
+    try:
+        return InputType(value.upper())
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"Invalid yaml type: {value}")
+
 def main():
-    parser = argparse.ArgumentParser(description="Start VM on a remote host and update values.yaml under a destination directory")
+    parser = argparse.ArgumentParser(description="Start VM on a remote host and update yaml file under a destination directory")
     parser.add_argument("--ip", help="The IP address of the remote host to SSH into.", default="192.168.222.1")
     parser.add_argument("-u", "--username", help="SSH username", default="root")
     parser.add_argument("-p", "--password", help="SSH password", default="redhat")
     parser.add_argument("-d", "--dir", help="Diretory to update the values.yaml")
     parser.add_argument("--extra-disk", action='store_true', help="Add extra disk to VM")
     parser.add_argument("--extra-int", action='store_true', help="Add extra interface to VM")
+    parser.add_argument("--type", help="yaml file type (SYLVA, BMH)", type=yaml_type, default=InputType.SYLVA)
     args = parser.parse_args()
-    generate_values_yaml(args.ip, args.username, args.password, f"{args.dir}/values.yaml", args.extra_disk, args.extra_int)
-
+    if args.type == InputType.SYLVA:
+        update_sylva_values_yaml(args.ip, args.username, args.password, f"{args.dir}/values.yaml", args.extra_disk, args.extra_int)
+    elif args.type == InputType.BMH:
+        for filename in os.listdir(args.dir):
+            if filename.endswith(".yaml"):
+                update_bmh_yaml(args.ip, args.username, args.password, os.path.join(args.dir, filename))
 
 if __name__ == "__main__":
     main()
