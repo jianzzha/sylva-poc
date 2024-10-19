@@ -80,7 +80,6 @@ def mac_exist_on_bridge(xml_content, mac, bridge=None):
                 return True
     return False
 
-
 def delete_vm_with_mac(ip_address, username, password, bridge, mac):
     """
     Delete a VM with a mac address on specified bridge
@@ -189,15 +188,16 @@ def update_bmh_yaml(ip_address, username, password, file_name):
     except Exception as e:
        print(f"Failed to handle {file_name}: {e}") 
 
-class InputType(enum.Enum):
+class OperateMode(enum.Enum):
     SYLVA = "SYLVA"
     BMH = "BMH"
+    DEL = "DEL"
 
-def yaml_type(value):
+def operate_mode(value):
     try:
-        return InputType(value.upper())
+        return OperateMode(value.upper())
     except ValueError:
-        raise argparse.ArgumentTypeError(f"Invalid yaml type: {value}")
+        raise argparse.ArgumentTypeError(f"Invalid operate mode: {value}")
 
 def main():
     parser = argparse.ArgumentParser(description="Start VM on a remote host and update yaml file under a destination directory")
@@ -207,14 +207,22 @@ def main():
     parser.add_argument("-d", "--dir", help="Diretory to update the values.yaml")
     parser.add_argument("--extra-disk", action='store_true', help="Add extra disk to VM")
     parser.add_argument("--extra-int", action='store_true', help="Add extra interface to VM")
-    parser.add_argument("--type", help="yaml file type (SYLVA, BMH)", type=yaml_type, default=InputType.SYLVA)
+    parser.add_argument("--mode", help="Operate mode (SYLVA, BMH, DEL: delete VMs)", type=operate_mode, default=OperateMode.SYLVA)
+    parser.add_argument("-v", "--vm", action='append', help="Specify one or more VM names (can be used multiple times) to delete")
     args = parser.parse_args()
-    if args.type == InputType.SYLVA:
+    if args.mode == OperateMode.SYLVA:
         update_sylva_values_yaml(args.ip, args.username, args.password, f"{args.dir}/values.yaml", args.extra_disk, args.extra_int)
-    elif args.type == InputType.BMH:
+    elif args.mode == OperateMode.BMH:
         for filename in os.listdir(args.dir):
             if filename.endswith(".yaml"):
                 update_bmh_yaml(args.ip, args.username, args.password, os.path.join(args.dir, filename))
+    elif args.mode == OperateMode.DEL:
+        # user must provide the VM names to do delete
+        if not args.vm:
+            print(f"Mode {args.mode} is specified but no --vm is provided")
+            sys.exit(1)
+        for vm_name in args.vm:
+            delete_vm_with_name(args.ip, args.username, args.password, vm_name)
 
 if __name__ == "__main__":
     main()
