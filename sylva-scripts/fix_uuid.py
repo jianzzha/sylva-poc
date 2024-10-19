@@ -116,9 +116,9 @@ def create_vm_and_get_uuid(ip_address, username, password, vm_name, mac, provisi
         delete_vm_with_mac(ip_address, username, password, "provision", provision_mac)
     extra = ""
     if provision_mac != "":
-        extra += f"--network bridge=provision,mac={provision_mac}"
+        extra += f" --network bridge=provision,mac={provision_mac}"
     if extra_disk:
-        extra += f"--disk size=600,bus=scsi,sparse=yes"
+        extra += f" --disk size=600,bus=scsi,sparse=yes"
     # Sequence of commands to destroy and start the VM
     commands = [
             f"sudo virt-install -n {vm_name} --pxe --os-variant=rhel8.0 --ram=16384 --vcpus=8 --network bridge=baremetal,mac={mac}  --disk size=600,bus=scsi,sparse=yes --check disk_size=off --noautoconsole --serial pty --graphics none {extra}"
@@ -136,7 +136,7 @@ def create_vm_and_get_uuid(ip_address, username, password, vm_name, mac, provisi
 
 def generate_provsion_mac(mac):
     """revert the last octect of a mac address"""
-    octets = mac(":")
+    octets = mac.split(":")
     last_octet_int = int(octets[5], 16)
     inverted_octet_int = ~last_octet_int & 0xFF
     inverted_octet_hex = format(inverted_octet_int, "02x")
