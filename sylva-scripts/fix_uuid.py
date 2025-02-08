@@ -162,7 +162,7 @@ def update_sylva_values_yaml(ip_address, username, password, file_name, extra_di
     with open(file_name, 'w') as f:
         yaml.dump(data, f, default_flow_style=False)
 
-def update_bmh_yaml(ip_address, username, password, file_name):
+def update_bmh_yaml(ip_address, username, password, file_name, extra_int=False):
     print(f"Read yaml from {file_name}")
     try:
         updated = False
@@ -175,7 +175,10 @@ def update_bmh_yaml(ip_address, username, password, file_name):
                 if entry['kind'] == 'BareMetalHost':
                     mac_address = entry['spec']['bootMACAddress']
                     name = entry['metadata']['name']
-                    uuid = create_vm_and_get_uuid(ip_address, username, password, name, mac_address)
+                    provision_mac = ""
+                    if extra_int:
+                        provision_mac = generate_provsion_mac(mac_address)
+                    uuid = create_vm_and_get_uuid(ip_address, username, password, name, mac_address, provision_mac)
                     entry['spec']['bmc']['address'] = replace_bmc_uuid(entry['spec']['bmc']['address'], uuid)
                     updated = True
                 updated_documents.append(entry)
@@ -215,7 +218,7 @@ def main():
     elif args.mode == OperateMode.BMH:
         for filename in os.listdir(args.dir):
             if filename.endswith(".yaml"):
-                update_bmh_yaml(args.ip, args.username, args.password, os.path.join(args.dir, filename))
+                update_bmh_yaml(args.ip, args.username, args.password, os.path.join(args.dir, filename), args.extra_int)
     elif args.mode == OperateMode.DEL:
         # user must provide the VM names to do delete
         if not args.vm:
