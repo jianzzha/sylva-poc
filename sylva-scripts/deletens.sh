@@ -12,7 +12,7 @@ show_help() {
    echo "-w <second to wait after all namespaced resourced are deleted before force delete the namespace>"
    echo "-c <kubeconfig file>, otherwise assume $HOME/.kube/config to be used"
    echo "-b <metal3 namespace>, need to use with -d"
-   echo "-d delete BMHs from the namespace before delete the namespace"
+   echo "-d force delete BMHs from the namespace without delete the namespace"
 }
 
 delete_bmh() {
@@ -69,8 +69,33 @@ if ! kubectl get ns ${namespace} >/dev/null 2>&1; then
     exit 0
 fi
 
+if [[ "${deletebmh}" == "true" && "${metal3ns}" == "" ]]; then
+    echo '-b not given, assuming metal3 namespace is metal3-system'
+    metal3ns='metal3-system'
+fi
+
 if [[ "${deletebmh}" == "true" ]]; then
-    delete_bmh
+    ironic_api_username=`kubectl get secret -n ${metal3ns} ironic-basic-auth -o jsonpath='{.data.username}' | base64 -d`
+    ironic_api_password=`kubectl get secret -n ${metal3ns} ironic-basic-auth -o jsonpath='{.data.password}' | base64 -d`
+    ironic_db_password=`kubectl get secret -n ${metal3ns} ironic-mariadb -o jsonpath='{.data.password}' | base64 -d`
+    ironic_url=`kubectl get cm -n ${metal3ns} ironic-bmo -o jsonpath="{.data.IRONIC_EXTERNAL_HTTP_URL}"`
+    db_pod=`kubectl get pods -n metal3-system  -l app.kubernetes.io/component=mariadb -o custom-columns=:metadata.name --no-headers`
+    bmhs=`kubectl get bmh -n ${namespace} -o custom-columns=:metadata.name --no-headers`
+    for bmh in ${bmhs}; do
+	uid=`kubectl get bmh -n ${namespace} ${bmh} -o jsonpath="{.metadata.uid}"`
+	if [[ -z "${uid}" ]]; then
+	    continue
+	fi
+        ironic_node_uuid=`kubectl exec -it ${db_pod} -n metal3-system -- mysql -u ironic -p${ironic_db_password} -B -N -e "use ironic; select uuid from nodes where instance_uuid=\"${uid}\";" | tr -d '\r'`
+	if [[ -z "${ironic_node_uuid}" ]]; then
+            continue
+	fi
+	echo "curl -X PUT -k -u ironic:${ironic_api_password} ${ironic_url}/v1/nodes/${ironic_node_uuid}/maintenance"
+        curl -X PUT -k -u ironic:${ironic_api_password} ${ironic_url}/v1/nodes/${ironic_node_uuid}/maintenance
+	echo "curl -X DELETE -k -u ironic:${ironic_api_password} ${ironic_url}/v1/nodes/${ironic_node_uuid}"
+	curl -X DELETE -k -u ironic:${ironic_api_password} ${ironic_url}/v1/nodes/${ironic_node_uuid}
+    done
+    exit 0
 fi
 
 curr_state=$(kubectl get ns ${namespace} -o jsonpath='{.status.phase}')
@@ -89,34 +114,6 @@ if [[ ${curr_state} != "Terminating" ]]; then
 	echo "Namespace ${namespace} in state ${curr_state} after deletion, can not continue"
 	exit 1
     fi
-fi
-
-if [[ "${deletebmh}" == "true" && "${metal3ns}" == "" ]]; then
-    echo '-b not given, assuming metal3 namespace is metal3-system'
-    metal3ns='metal3-system'
-fi
-
-if [[ "${deletebmh}" == "true" ]]; then
-    ironic_api_username=`kubectl get secret -n ${metal3ns} ironic-basic-auth -o jsonpath='{.data.username}' | base64 -d`
-    ironic_api_password=`kubectl get secret -n ${metal3ns} ironic-basic-auth -o jsonpath='{.data.password}' | base64 -d`
-    ironic_db_password=`kubectl get secret -n ${metal3ns} ironic-mariadb -o jsonpath='{.data.password}' | base64 -d`
-    ironic_url=`kubectl get cm -n ${metal3ns} ironic-bmo -o jsonpath="{.data.IRONIC_EXTERNAL_HTTP_URL}"`
-
-    bmhs=`kubectl get bmh -n ${namespace} -o custom-columns=:metadata.name --no-headers`
-    for bmh in ${bmhs}; do
-	uid=`kubectl get bmh -n ${namespace} ${bmh} -o jsonpath="{.metadata.uid}"`
-	if [[ -z "${uid}" ]]; then
-	    continue
-	fi
-        ironic_node_uuid=`kubectl exec -it metal3-metal3-mariadb-647cf958c4-l5mbx -n metal3-system -- mysql -u ironic -p${ironic_db_password} -B -N -e "use ironic; select uuid from nodes where instance_uuid=\"${uid}\";" | tr -d '\r'`
-	if [[ -z "${ironic_node_uuid}" ]]; then
-            continue
-	fi
-	echo "curl -X PUT -k -u ironic:${ironic_api_password} ${ironic_url}/v1/nodes/${ironic_node_uuid}/maintenance"
-        curl -X PUT -k -u ironic:${ironic_api_password} ${ironic_url}/v1/nodes/${ironic_node_uuid}/maintenance
-	echo "curl -X DELETE -k -u ironic:${ironic_api_password} ${ironic_url}/v1/nodes/${ironic_node_uuid}"
-	curl -X DELETE -k -u ironic:${ironic_api_password} ${ironic_url}/v1/nodes/${ironic_node_uuid}
-    done
 fi
 
 # namespace should be in Terminating state here
